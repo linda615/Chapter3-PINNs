@@ -1,0 +1,50 @@
+[
+  {
+    "model_name": "w_pinn",
+    "device": "CPU (TensorFlow host execution)",
+    "tensorflow_version": "2.10.1",
+    "iterations": 10,
+    "warmup_iterations": 2,
+    "interior_points": 2048,
+    "boundary_points_per_side": 80,
+    "t_iterations_seconds": 25.8365931,
+    "seconds_per_iteration": 2.5836593100000003,
+    "target_iterations": 20000,
+    "estimated_total_seconds": 51673.186200000004,
+    "estimated_total_hours": 14.353662833333335,
+    "final_loss": 0.6588639616966248,
+    "slowdown_vs_fastest": 4.743493891909573
+  },
+  {
+    "model_name": "mo4_pinn",
+    "device": "CPU (TensorFlow host execution)",
+    "tensorflow_version": "2.10.1",
+    "iterations": 10,
+    "warmup_iterations": 2,
+    "interior_points": 2048,
+    "boundary_points_per_side": 80,
+    "t_iterations_seconds": 25.5738196,
+    "seconds_per_iteration": 2.55738196,
+    "target_iterations": 20000,
+    "estimated_total_seconds": 51147.6392,
+    "estimated_total_hours": 14.207677555555556,
+    "final_loss": 0.2291121482849121,
+    "slowdown_vs_fastest": 4.695249741166427
+  },
+  {
+    "model_name": "mixed_6b",
+    "device": "CPU (TensorFlow host execution)",
+    "tensorflow_version": "2.10.1",
+    "iterations": 10,
+    "warmup_iterations": 2,
+    "interior_points": 2048,
+    "boundary_points_per_side": 80,
+    "t_iterations_seconds": 5.4467432,
+    "seconds_per_iteration": 0.54467432,
+    "target_iterations": 20000,
+    "estimated_total_seconds": 10893.486400000002,
+    "estimated_total_hours": 3.025968444444445,
+    "final_loss": 0.10533155500888824,
+    "slowdown_vs_fastest": 1.0
+  }
+]

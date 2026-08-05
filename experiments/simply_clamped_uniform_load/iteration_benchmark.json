@@ -1,0 +1,50 @@
+[
+  {
+    "model_name": "w_pinn",
+    "device": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "tensorflow_version": "2.10.1",
+    "iterations": 100,
+    "warmup_iterations": 5,
+    "interior_points": 2048,
+    "boundary_points_per_side": 80,
+    "t_iterations_seconds": 79.9334528,
+    "seconds_per_iteration": 0.7993345279999999,
+    "target_iterations": 20000,
+    "estimated_total_seconds": 15986.69056,
+    "estimated_total_hours": 4.440747377777778,
+    "final_loss": 0.21804121136665344,
+    "slowdown_vs_fastest": 2.666238957213309
+  },
+  {
+    "model_name": "mo4_pinn",
+    "device": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "tensorflow_version": "2.10.1",
+    "iterations": 100,
+    "warmup_iterations": 5,
+    "interior_points": 2048,
+    "boundary_points_per_side": 80,
+    "t_iterations_seconds": 80.2164261,
+    "seconds_per_iteration": 0.802164261,
+    "target_iterations": 20000,
+    "estimated_total_seconds": 16043.285220000002,
+    "estimated_total_hours": 4.4564681166666675,
+    "final_loss": 0.049532271921634674,
+    "slowdown_vs_fastest": 2.675677739223627
+  },
+  {
+    "model_name": "mixed_6b",
+    "device": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "tensorflow_version": "2.10.1",
+    "iterations": 100,
+    "warmup_iterations": 5,
+    "interior_points": 2048,
+    "boundary_points_per_side": 80,
+    "t_iterations_seconds": 29.979853300000002,
+    "seconds_per_iteration": 0.29979853300000003,
+    "target_iterations": 20000,
+    "estimated_total_seconds": 5995.970660000001,
+    "estimated_total_hours": 1.6655474055555557,
+    "final_loss": 0.043300796300172806,
+    "slowdown_vs_fastest": 1.0
+  }
+]

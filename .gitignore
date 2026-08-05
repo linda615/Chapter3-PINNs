@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments and local tools
+.venv/
+venv/
+env/
+.vscode/
+.idea/
+.agents/
+.codex/
+
+# Generated experiment artifacts
+outputs/
+tmp/
+experiments/**/results*/
+*.weights.h5
+*.keras
+*.ckpt*
+*.log
+
+# Keep the finite-difference inputs required by the rock-roof experiment
+!experiments/clamped_rock_roof_nonuniform_support/reference/
+!experiments/clamped_rock_roof_nonuniform_support/reference/*.npz
+
+# Local manuscript and OS files
+*.docx
+*.pdf
+.DS_Store
+Thumbs.db
+desktop.ini
