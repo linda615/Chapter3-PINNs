@@ -1,0 +1,154 @@
+{
+  "plate": {
+    "D": 1.0,
+    "nu": 0.25
+  },
+  "boundary_type": "clamped",
+  "foundation_enabled": true,
+  "foundation_min": 20.0,
+  "foundation_max": 200.0,
+  "foundation_transition_x": 0.45,
+  "foundation_transition_width": 0.08,
+  "load_background": 1.0,
+  "load_gradient_x": 0.3,
+  "load_local_amplitude": 0.8,
+  "load_center_x": 0.68,
+  "load_center_y": 0.42,
+  "load_width_x": 0.18,
+  "load_width_y": 0.15,
+  "model_grouping": "six",
+  "hidden_width": 32,
+  "hidden_depth": 3,
+  "activation": "tanh",
+  "output_activation": "tanh",
+  "use_shared_trunk": true,
+  "shared_width": 64,
+  "shared_depth": 2,
+  "field_output_scales": {
+    "w": 0.62969522304338,
+    "Mx": 0.110065241956486,
+    "My": 0.110065241956486,
+    "Mxy": 0.110065241956486,
+    "Qx": 0.736258077137578,
+    "Qy": 0.736258077137578
+  },
+  "hard_clamped_slope": true,
+  "learning_rate_schedule": {
+    "initial_learning_rate": 0.001,
+    "learning_rate_2": 0.0005,
+    "learning_rate_3": 0.0001,
+    "final_learning_rate": 3e-05,
+    "first_decay_epoch": 3000,
+    "second_decay_epoch": 7000,
+    "third_decay_epoch": 12000
+  },
+  "fine_tuning": {
+    "adam_epochs": 1500,
+    "adam_learning_rate": 3e-05,
+    "adam_log_every": 100,
+    "fdm_evaluation_every": 200,
+    "early_stopping_patience": 3,
+    "early_stopping_min_delta": 0.0001,
+    "loss_weights": {
+      "moment": 1.0,
+      "shear": 1.0,
+      "equilibrium": 1.0,
+      "boundary": 1.0,
+      "mxy_consistency": 0.0
+    },
+    "lbfgs": {
+      "max_iterations": 500,
+      "max_line_search_iterations": 50,
+      "function_tolerance": 1e-12,
+      "gradient_tolerance": 1e-08,
+      "log_every": 20,
+      "seed": 9031
+    },
+    "lbfgs_fdm_evaluation_every": 20
+  },
+  "loss_weights": {
+    "stages": [
+      {
+        "end_epoch": 3000,
+        "weights": {
+          "moment": 1.0,
+          "shear": 0.2,
+          "equilibrium": 0.05,
+          "boundary": 5.0,
+          "mxy_consistency": 0.0
+        }
+      },
+      {
+        "end_epoch": 8000,
+        "weights": {
+          "moment": 1.0,
+          "shear": 2.0,
+          "equilibrium": 1.0,
+          "boundary": 2.0,
+          "mxy_consistency": 0.0
+        }
+      },
+      {
+        "end_epoch": 15000,
+        "weights": {
+          "moment": 1.0,
+          "shear": 2.0,
+          "equilibrium": 5.0,
+          "boundary": 1.0,
+          "mxy_consistency": 0.0
+        }
+      }
+    ]
+  },
+  "mxy_consistency_config": {
+    "enabled": false,
+    "minimum_scale": 0.001,
+    "stop_gradient_target": true
+  },
+  "physics_loss_config": {
+    "normalize_residuals": true,
+    "residual_scales": {
+      "moment_x": 0.0275163104891215,
+      "moment_y": 0.0275163104891215,
+      "twisting_moment": 0.0275163104891215,
+      "shear_x": 0.184064519284395,
+      "shear_y": 0.184064519284395,
+      "equilibrium": 1.2312605381012
+    },
+    "component_weights": {
+      "moment_x": 1.0,
+      "moment_y": 1.0,
+      "twisting_moment": 1.0,
+      "shear_x": 1.0,
+      "shear_y": 1.0
+    }
+  },
+  "boundary_loss_config": {
+    "normalize_residuals": true,
+    "residual_scales": {
+      "deflection": 0.000614936741253301,
+      "slope": 0.00411348882379597,
+      "moment": 0.0275163104891215,
+      "shear": 0.184064519284395
+    }
+  },
+  "shared_pcgrad": {
+    "enabled": true,
+    "start_epoch": 5001,
+    "epsilon": 1e-12
+  },
+  "seed": 2031,
+  "monitor_grid_size": 41,
+  "fdm_evaluation_every": 200,
+  "fdm_evaluation_batch_size": 8192,
+  "results_dir": "experiments/clamped_rock_roof_nonuniform_support/results_bounded_output_rms_loss",
+  "reference_path": "experiments/clamped_rock_roof_nonuniform_support/reference/rock_roof_reference.npz",
+  "training": {
+    "epochs": 20000,
+    "interior_points": 2048,
+    "boundary_points_per_side": 20,
+    "boundary_type": "clamped",
+    "log_every": 100,
+    "seed": 2031
+  }
+}

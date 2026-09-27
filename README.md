@@ -1,87 +1,38 @@
 # Mixed-variable PINNs for Kirchhoff plate bending
 
-本仓库整理了博士论文第 3 章的可复现实验代码。模型使用共享主干与六个物理场分支，同时预测薄板挠度 `w`、弯矩 `Mx/My/Mxy` 和剪力 `Qx/Qy`，并通过 Kirchhoff 薄板方程、物理量递推关系及边界条件进行无监督训练。
+博士论文第三章实验代码。网络联合预测挠度w、弯矩Mx/My/Mxy和剪力Qx/Qy，训练损失由混合物理关系、平衡方程及边界约束构成。参考解用于尺度设置、模型选择和误差评价，不作为逐点拟合标签。
 
-> 说明：参考解仅用于训练后的精度评估（岩层顶板算例中也用于独立的检查点监控），不作为监督标签加入物理损失。
+## 环境与运行
 
-## 论文实验
-
-| 论文算例 | 目录 | 边界与载荷 | 参考解 |
-| --- | --- | --- | --- |
-| 四边简支薄板 | `experiments/simply_supported_sinusoidal` | 四边简支，正弦分布载荷 | 显式解析解 |
-| 混合边界薄板 | `experiments/simply_clamped_uniform_load` | 两边简支、两边固支，均布载荷 | Levy 级数解 |
-| 岩层顶板 | `experiments/clamped_rock_roof_nonuniform_support` | 四边固支，非均匀载荷与 Winkler 支承 | 独立有限差分解 |
-
-核心实现按职责划分为：`models/`（网络）、`physics/`（控制方程和自动微分）、`boundary/`（边界条件）、`sampling/`（配置点采样）、`losses/`（归一化物理损失）和 `trainer/`（Adam、PCGrad、L-BFGS）。
-
-## 环境
-
-建议使用 Python 3.10 或 3.11，并在仓库根目录创建独立环境：
+论文实验使用Python 3.9、TensorFlow 2.10.1；分布式比较另使用Python 3.8、TensorFlow 2.10.0。消融入口需使用GPU。在仓库根目录运行：
 
 ```bash
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-# Linux/macOS: source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
-
-如需 GPU，请根据本机 CUDA 环境和 TensorFlow 官方兼容表安装对应版本。
-
-## 快速验证
-
-以下命令只运行很短的训练，用于验证安装与数据流，不代表论文结果：
-
-```bash
-python -m experiments.simply_supported_sinusoidal.run --epochs 1
-python -m experiments.simply_clamped_uniform_load.run --epochs 1
-python -m experiments.clamped_rock_roof_nonuniform_support.run --epochs 1 --fdm-evaluation-every 0
-```
-
-运行自动测试：
-
-```bash
-python -m pytest -q
-```
-
-## 复现正式实验
-
-### 1. 四边简支正弦载荷
-
-```bash
+python -m pip install -r requirements-paper.txt
 python -m experiments.simply_supported_sinusoidal.run
-python -m experiments.simply_supported_sinusoidal.evaluate --save-figures
-python -m experiments.simply_supported_sinusoidal.plot_loss_history
-```
-
-### 2. 简支/固支混合边界均布载荷
-
-```bash
-python -m experiments.simply_clamped_uniform_load.run
-python -m experiments.simply_clamped_uniform_load.evaluate --save-figures
-```
-
-该目录还包含 W-PINN、MO4-PINN 和全共享网络等对比入口，详见 [`experiments/simply_clamped_uniform_load/README.md`](experiments/simply_clamped_uniform_load/README.md)。
-
-### 3. 非均匀支承岩层顶板
-
-仓库保留了正式算例所需的有限差分参考数据。重新生成参考解、训练和评估的命令如下：
-
-```bash
-python -m experiments.clamped_rock_roof_nonuniform_support.reference.generate_reference
-python -m experiments.clamped_rock_roof_nonuniform_support.reference.grid_convergence
+python -m experiments.simply_clamped_uniform_load.ablation --name Mixed-6B --seed 2052
 python -m experiments.clamped_rock_roof_nonuniform_support.run
-python -m experiments.clamped_rock_roof_nonuniform_support.evaluate --save-figures
 ```
 
-完整的二阶段微调、诊断和外部求解器导出方法见 [`experiments/clamped_rock_roof_nonuniform_support/README.md`](experiments/clamped_rock_roof_nonuniform_support/README.md)。
+第一、第三个算例训练后运行对应的`evaluate --save-figures`模块。第三例损失图由`experiments.clamped_rock_roof_nonuniform_support.plot_loss_history`生成。消融入口完成训练后自动评价。
 
-## 输出与版本控制
+## 实验设置
 
-训练会在各实验目录的 `results*` 下生成权重、历史记录、CSV 和图片。这些文件体积较大且可以重新生成，因此默认不会提交到 Git。根目录的 `outputs/`、缓存、临时论文文件和本机编辑器配置也已排除。岩层顶板的两份 `reference/*.npz` 是复现实验所需输入，已明确保留。
+| 算例 | 输出映射 | 参考解 |
+|---|---|---|
+| SSSS，正弦载荷 | 线性输出、单位输出尺度 | 解析解 |
+| SCSC，均布载荷 | tanh及分量输出尺度 | 40个奇数模态的Lévy级数 |
+| CCCC，非均匀地基与载荷 | tanh及分量输出尺度 | 241×241有限差分参考解 |
 
-随机种子、采样点数、学习率阶段、损失权重和输出目录都集中在各实验的 `config.py` 中；每次运行还会在结果目录写出 `config.json`，用于记录实际配置。
+三个算例均训练20000轮，域内配置点数为2048。SSSS每边20个边界点；SCSC每边80个候选点；CCCC通过挠度输出变换满足全固支边界，不设置对应软边界损失。PCGrad自第5001轮启用，仅处理共享参数的任务梯度。
 
-## 引用与许可
+消融模型为W-PINN、MO4-PINN、Mixed-1B、Mixed-3B、Mixed-6B和Mixed-1B-Wide，各使用2051、2052、2053三个种子。每200轮在101×101网格上选优，在200×200单元中心网格上测试，采用float32并关闭TF32。跨硬件标准差包含种子与执行环境差异，耗时只在同硬件下比较。
 
-本仓库包含作者博士论文第 3 章相关实验的研究代码。论文目前尚未最终定稿，正式的论文题目、出版年份及推荐引用格式将在论文完成后更新。
+最新CCCC六场平均相对L₂误差为**4.1905%**。结果表及该次训练记录见[data/paper](data/paper)。运行配置保存为`config.json`，权重、场数组和图片保存在各算例的`results*`目录，不纳入版本控制。SCSC消融使用`results_ablation`，CCCC使用`results_bounded_output_rms_loss`。
+
+## 方法来源
+
+- Raissi et al., Journal of Computational Physics, 2019, 378: 686–707. DOI: 10.1016/j.jcp.2018.10.045.
+- Yu et al., Gradient Surgery for Multi-Task Learning, NeurIPS, 2020.
+- Timoshenko and Woinowsky-Krieger, Theory of Plates and Shells, 2nd ed., 1959.
+
+本仓库为作者博士论文相关研究代码，论文引用信息将在定稿后补充。

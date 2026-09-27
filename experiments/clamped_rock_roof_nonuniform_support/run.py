@@ -108,10 +108,18 @@ def run_experiment(config: ExperimentConfig = DEFAULT_CONFIG) -> List[Dict[str, 
             snapshot = _snapshot_losses(epoch, loss_dict)
             history.append(snapshot)
             print(_format_loss_line(epoch, snapshot))
+            # Persist progress during long runs so an interruption does not
+            # discard the complete in-memory training history.
+            save_history_csv(history, config.loss_history_path)
+            save_history_csv(monitor.records, config.monitor_history_path)
 
         if fdm_monitor is not None and fdm_monitor.should_evaluate(epoch):
             fdm_snapshot = fdm_monitor.evaluate(epoch)
             print(_format_fdm_validation_line(fdm_snapshot))
+            save_history_csv(
+                fdm_monitor.records,
+                config.fdm_validation_history_path,
+            )
 
     save_history_csv(history, config.loss_history_path)
     save_history_csv(monitor.records, config.monitor_history_path)

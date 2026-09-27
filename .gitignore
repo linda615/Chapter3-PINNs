@@ -36,3 +36,6 @@ experiments/**/results*/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Local build artifacts
+.codex-build/

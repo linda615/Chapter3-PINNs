@@ -166,6 +166,12 @@ def run_full_evaluation(
             reference_fields,
             grid_size=reference_grid_size,
             reference_title="有限差分参考解",
+            prediction_title="PINN直接预测",
+            error_title="绝对误差",
+            panel_titles_below=True,
+            include_field_title=False,
+            dpi=300,
+            panel_title_font_size=11.5,
         )
         save_field_figures(
             figures_dir / "from_w",
