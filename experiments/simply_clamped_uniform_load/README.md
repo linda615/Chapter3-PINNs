@@ -21,6 +21,42 @@ python -m experiments.simply_clamped_uniform_load.ablation --name Mixed-6B --see
 
 本目录其他训练入口用于单次试验；论文消融结果使用上述ablation入口。
 
+## RTX 4090D 同硬件计时复现实验
+
+论文中的 W-PINN、MO4-PINN 与 Mixed-6B 训练耗时必须来自同一块空闲的
+RTX 4090D。专用入口固定随机种子为2051、训练轮数为20000，并在三个相互
+隔离的Python进程中顺序运行模型，避免显存争用和旧结果污染：
+
+```bash
+python -m experiments.simply_clamped_uniform_load.benchmark_4090d \
+  --run-id paper_seed2051_4090d
+```
+
+程序启动前会检查GPU型号和已有计算进程，并依次进行短检查及正式训练。
+中断后执行同一条命令可从状态checkpoint继续；不要更改`--run-id`。结果位于：
+
+```text
+experiments/simply_clamped_uniform_load/results_benchmark_4090d/
+    paper_seed2051_4090d/
+        benchmark_manifest.json
+        benchmark_progress.json
+        timing_summary.json
+        timing_summary.csv
+        logs/
+        runs/
+            W-PINN_seed2051/
+            MO4-PINN_seed2051/
+            Mixed-6B_seed2051/
+```
+
+`benchmark_progress.json`在每个模型启动和完成时立即更新，记录UTC起止时间与
+完整进程墙钟时间。`timing_summary.json`和`timing_summary.csv`在每完成一个
+模型后更新，其中论文训练效率以`train_seconds`为准：该字段包含逐轮采样、
+首次`tf.function`图构建、物理残差与自动微分、反向传播和参数更新，不包含
+周期性验证、checkpoint写入、日志及最终评价。`process_wall_seconds`则记录完整
+模型进程耗时，作为复核信息。三个模型不得在同一块GPU上并发运行，否则耗时
+不具备可比性。
+
 ## Alpha/Beta 尺度敏感性实验
 
 尺度实验固定使用上述 Mixed-6B、20000 epochs、三随机种子及相同的采样、学习率、损失权重和 PCGrad 设置，只改变输出尺度系数 alpha 与残差尺度系数 beta：

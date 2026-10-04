@@ -6,5 +6,7 @@
 - `scsc_scale_ablation_seed2051.csv`：随机种子2051的四组尺度设置结果，包含第20000轮最终模型和验证选优模型。
 - `cccc_errors.csv`：2026年9月26日训练的验证选优模型在241×241有限差分网格上的直接输出误差。
 - `cccc_loss.csv`、`cccc_fdm_validation.csv`、`cccc_config.json`：该次训练记录与配置。
+- `rtx4090d_seed2051_timing.csv`：W-PINN、MO4-PINN与Mixed-6B在同一块RTX 4090D上的串行计时结果。
+- `rtx4090d_seed2051_environment.json`：上述计时实验的软硬件环境、计时范围、加速比和原始归档校验值。
 
 跨硬件和TensorFlow版本的运行可能存在浮点差异。历史试验结果不作为当前论文结果。

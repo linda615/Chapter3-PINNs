@@ -1,0 +1,59 @@
+{
+  "benchmark": "SCSC three-model RTX 4090D timing",
+  "run_id": "paper_seed2051_4090d",
+  "created_at_utc": "2026-10-04T11:26:55.311719+00:00",
+  "seed": 2051,
+  "epochs": 20000,
+  "execution_order": [
+    "W-PINN",
+    "MO4-PINN",
+    "Mixed-6B"
+  ],
+  "execution_mode": "tf.function",
+  "tf32": false,
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 4090 D",
+    "gpu_memory_mib": 24564,
+    "driver_version": "580.76.05"
+  },
+  "software": {
+    "platform": "Linux-5.15.0-94-generic-x86_64-with-glibc2.17",
+    "python": "3.8.20",
+    "tensorflow": "2.10.0"
+  },
+  "primary_timing_field": "train_seconds",
+  "timing_scope": {
+    "included": [
+      "per-epoch sampling",
+      "first tf.function graph trace",
+      "physics residual computation",
+      "automatic differentiation",
+      "backpropagation",
+      "optimizer parameter update",
+      "loss scalar synchronization and finite-value check"
+    ],
+    "excluded": [
+      "periodic reference-solution validation",
+      "checkpoint and log writing",
+      "final offline evaluation"
+    ]
+  },
+  "comparisons": [
+    {
+      "baseline": "W-PINN",
+      "candidate": "Mixed-6B",
+      "time_reduction_percent": 64.61571177855984,
+      "speedup": 2.82611308652544
+    },
+    {
+      "baseline": "MO4-PINN",
+      "candidate": "Mixed-6B",
+      "time_reduction_percent": 79.80364171074933,
+      "speedup": 4.951387699099401
+    }
+  ],
+  "source_archive": {
+    "name": "rtx4090d_seed2051_complete.tar.gz",
+    "sha256": "94623A788FB612E14B110715CD5A4A2502259EF95BC7D5613C385E7744742C9D"
+  }
+}
